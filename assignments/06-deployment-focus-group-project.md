@@ -20,6 +20,8 @@
 12. `cd augur`
 13. `sudo yum install postgresql postgresql-server postgresql-devel postgresql-contrib postgresql-docs`
 14. `sudo postgresql-setup initdb`
+15. Now start the server: `sudo service postgresql start`
+16. Then stop the server: `sudo service postgresql stop`
 15. `sudo vim /var/lib/pgsql/data/pg_hba.conf`
 
 
@@ -40,15 +42,28 @@ To read this:
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
 # "local" is for Unix domain socket connections only
-local   all             all                                     trust
-local   all             all             127.0.0.1/32            md5
+# local   all             all                                     peer
 # IPv4 local connections:
-host    all             all             127.0.0.1/32            ident
+host    all             all             127.0.0.1/32            md5 
+# IPv6 local connections:
+# host    all             all             ::1/128                 ident
+
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     trust
+local	all		all					md5
+# IPv4 local connections:
 host    all             power_user      0.0.0.0/0               md5
 host    all             other_user      0.0.0.0/0               md5
 host    all             storageLoader   0.0.0.0/0               md5
 # IPv6 local connections:
 host    all             all             ::1/128                 md5
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+#local   replication     postgres                                peer
+#host    replication     postgres        127.0.0.1/32            ident
+#host    replication     postgres        ::1/128                 ident
 ```
 
 
